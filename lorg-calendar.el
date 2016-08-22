@@ -481,7 +481,7 @@ This is a modification of:  http://homepage3.nifty.com/oatu/emacs/calendar.html"
                 (skip-syntax-forward "w")
                 (setq end (point))
                 (skip-syntax-backward "w")
-                (setq beg (point))
+                (setq beg (1- (point))) ;; I am using `1-' for days 1 to 9
                 (mapc 'delete-overlay (overlays-in beg end)))) )
           (lorg-mouse-marked))
         (t

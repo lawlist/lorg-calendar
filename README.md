@@ -9,7 +9,7 @@ lorg-calendar.el
     To scroll month by month backward, use:  <
     To mark a new date not yet selected, use the left click on the mouse, which will also copy the date to the kill-ring.  Left-clicking on a date previously marked with the left-click will remove the overlay.
 
-`lorg-calendar` is a simplified variation of a custom calendar that I use daily, which is on Github just in case anyone is interested in seeing how it works.  It doesn't come with any instructions other than the first few lines in the comments at the beginning of the file.  It is an Emacs 12-month calendar that scrolls (forwards/backwards in time) and is able to mark birthdays, holidays and appointments.
+`lorg-calendar` is a simplified variation of a custom calendar that I use daily, which is on Github just in case anyone is interested in seeing how it works.  It doesn't come with any instructions other than the first few lines in the comments at the beginning of the file (same as above).  It is an Emacs 12-month calendar that scrolls (forwards/backwards in time) and is able to mark birthdays, holidays and appointments.
 
 The 12-month rotating calendar is a culmination of help that I received from several people who responded to various threads on stackoverflow.com regarding algorithms and so forth.  Where help was provided, I have included citations in the comments of the code.  It relies upon many of the existing functions/features of the Emacs built-in `calendar` and `org-mode` libraries.
 

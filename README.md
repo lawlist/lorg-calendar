@@ -3,13 +3,11 @@ lorg-calendar.el
 
 3-month or 12-month scrolling calendar, with support for appointments, court appearances, birthdays, court holidays (Los Angeles Superior Court), and dates previously marked with the mouse.
 
-     INSTRUCTIONS: M-x lorg-calendar-generate
+    INSTRUCTIONS: M-x lorg-calendar-generate
 
-     To scroll month by month forward, use:  >
-     To scroll month by month backward, use:  <
-     To mark a new date not yet selected, use the left click on the mouse,
-       which will also copy the date to the kill-ring.  Left-clicking on a
-       date previously marked with the left-click will remove the overlay.
+    To scroll month by month forward, use:  >
+    To scroll month by month backward, use:  <
+    To mark a new date not yet selected, use the left click on the mouse, which will also copy the date to the kill-ring.  Left-clicking on a date previously marked with the left-click will remove the overlay.
 
 `lorg-calendar` is a simplified variation of a custom calendar that I use daily, which is on Github just in case anyone is interested in seeing how it works.  It doesn't come with any instructions other than the first few lines in the comments at the beginning of the file.  It is an Emacs 12-month calendar that scrolls (forwards/backwards in time) and is able to mark birthdays, holidays and appointments.
 

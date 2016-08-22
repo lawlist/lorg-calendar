@@ -3,9 +3,8 @@ lorg-calendar.el
 
 3-month or 12-month scrolling calendar, with support for appointments, court appearances, birthdays, court holidays (Los Angeles Superior Court), and dates previously marked with the mouse.
 
-     INSTRUCTIONS:
-        M-x lorg-calendar-generate
-    
+     INSTRUCTIONS: M-x lorg-calendar-generate
+
      To scroll month by month forward, use:  >
      To scroll month by month backward, use:  <
      To mark a new date not yet selected, use the left click on the mouse,

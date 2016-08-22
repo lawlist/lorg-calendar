@@ -15,7 +15,7 @@ The 12-month rotating calendar is a culmination of help that I received from sev
 
 The pre-programmed holidays are the ones recognized by the Los Angeles Superior Court in California.
 
-I my own setup (not available to the public) I use a custom modified version of `calfw`, which shows 1 month, 2 weeks, 1 week, or 1 day.  If I want to see 3 months or 12 months, then I use a more complex version of `lorg-calendar`, which is also able to generate agenda views when I click on a date.
+I my own setup (not available to the public) I use a custom modified version of `calfw`, which shows 1 month, 2 weeks, 1 week, or 1 day.  If I want to see 3 months or 12 months, then I use a more complex version of `lorg-calendar`, which is able to generate agenda views when I click on a date.
 
 I synchronize my tasks/events with Toodledo over the internet with a custom modified version of `org-toodledo` (not available to the public), which supports all keywords and priorities; and, that is why the tasks/events in the example are in a specific format.
 

@@ -17,8 +17,6 @@ I my own setup (not available to the public) I use a custom modified version of 
 
 I synchronize my tasks/events with Toodledo over the internet with a custom modified version of `org-toodledo` (not available to the public), which supports all keywords and priorities; and, that is why the tasks/events in the example are in a specific format.
 
-Here is a link to an even more simplified version of the 12-month rotating calendar that I posted on stackoverflow.com:
-
-http://stackoverflow.com/a/21409154/2112489
+Here is a link to an even more simplified version of the 12-month rotating calendar that I posted on stackoverflow.com:  http://stackoverflow.com/a/21409154/2112489
 
 ![screenshot](http://www.lawlist.com/images/calendar_example.png)

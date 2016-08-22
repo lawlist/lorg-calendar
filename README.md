@@ -1,7 +1,7 @@
 lorg-calendar.el
 ================
 
-    INSTRUCTIONS: M-x lorg-calendar-generate
+    INSTRUCTIONS:  M-x lorg-calendar-generate
 
     To scroll month by month forward, use:  >
     To scroll month by month backward, use:  <

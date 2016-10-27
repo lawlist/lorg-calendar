@@ -11,6 +11,8 @@ lorg-calendar.el
 
 `lorg-calendar` is a simplified variation of a custom calendar that I use daily, which is on Github just in case anyone is interested in seeing how it works.  It does not come with any instructions other than the first few lines in the comments at the beginning of the file (same as above).  It is an Emacs 3-month or 12-month calendar that scrolls (forwards/backwards in time) and is able to mark birthdays, holidays, appointments, court appearances, and dates previously marked with the mouse.
 
+Try using `lorg-calendar` with `emacs -q` -- i.e., nothing extra except for this library.  After the user verifies that `lorg-calendar` works as advertised (with no user configuration), feel free to expand upon and modify the example.
+
 The 12-month scrolling calendar is a culmination of help that I received from several people who responded to various threads on stackoverflow.com regarding algorithms and so forth.  Where help was provided, I have included citations in the comments of the code.  It relies upon many of the existing functions/features of the Emacs built-in `calendar` and `org-mode` libraries.
 
 The example of calendared dates (birthdays, appointments and court appearances) are in the month of **February 2014**.  The pre-programmed holidays (that automatically appear for all years) are the ones recognized by the Los Angeles Superior Court in California.

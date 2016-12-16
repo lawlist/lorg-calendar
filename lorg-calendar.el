@@ -50,15 +50,15 @@ This is a modification of:  http://homepage3.nifty.com/oatu/emacs/calendar.html"
       (month
         (cond
           ((called-interactively-p)
-            (string-to-number (read-string
-              "Please choose the `displayed-month` (1 through 12):  " nil nil "1")))
+            (read-number
+              "Please choose the `displayed-month` (1 through 12):  " 1))
           (t
             (if month month (calendar-extract-month today)))))
       (year
         (cond
           ((called-interactively-p)
-            (string-to-number (read-string
-              "Please choose the `displayed-year` (e.g., 2014):  " nil nil current-year)))
+            (read-number
+              "Please choose the `displayed-year` (e.g., 2014):  " current-year))
           (t
             (if year year (calendar-extract-year today)))))
       (style

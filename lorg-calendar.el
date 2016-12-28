@@ -18,8 +18,70 @@
   (define-key calendar-mode-map "<" 'lorg-calendar-backward-month)
   (define-key calendar-mode-map ">" 'lorg-calendar-forward-month)
   (define-key calendar-mode-map "." 'lorg-calendar-goto-today)
-  (define-key calendar-mode-map [mouse-1] 'lorg-mark-mouse-set-point) ))
+  (define-key calendar-mode-map [mouse-1] 'lorg-mark-mouse-set-point)
+  (define-key calendar-mode-map [up]    'lorg-calendar-backward-week)
+  (define-key calendar-mode-map [down]  'lorg-calendar-forward-week)
+  (define-key calendar-mode-map [right] 'lorg-calendar-forward-day)
+  (define-key calendar-mode-map [left]  'lorg-calendar-backward-day) ))
 
+(defun lorg-calendar-other-month (month year &optional event)
+  "Display a three-month lawlist-calendar centered around MONTH and YEAR.
+EVENT is an event like `last-nonmenu-event'."
+  (interactive (let ((event (list last-nonmenu-event)))
+                 (append (calendar-read-date 'noday) event)))
+  (save-selected-window
+    (and event
+         (setq event (event-start event))
+         (select-window (posn-window event)))
+    (unless (and (= month displayed-month)
+                 (= year displayed-year))
+      (let ((old-date (lorg-calendar-cursor-to-date))
+            (today (lorg-calendar-current-date)))
+        (lorg-calendar-generate month year)
+        (lorg-calendar-cursor-to-visible-date
+         (cond
+          ((lorg-calendar-date-is-visible-p old-date) old-date)
+          ((lorg-calendar-date-is-visible-p today) today)
+          (t (list month 1 year))))))))
+
+(defun lorg-calendar-forward-day (arg)
+  "Move the cursor forward ARG days.
+Moves backward if ARG is negative."
+  (interactive "p")
+  (unless (zerop arg)
+    (let* ((cursor-date (or (lorg-calendar-cursor-to-date)
+                            (progn
+                              (if (> arg 0) (setq arg (1- arg)))
+                              (lorg-calendar-cursor-to-nearest-date))))
+           (new-cursor-date
+            (calendar-gregorian-from-absolute
+             (+ (calendar-absolute-from-gregorian cursor-date) arg)))
+           (new-display-month (calendar-extract-month new-cursor-date))
+           (new-display-year (calendar-extract-year new-cursor-date)))
+      ;; Put the new month on the screen, if needed.
+      (unless (lorg-calendar-date-is-visible-p new-cursor-date)
+        (lorg-calendar-other-month new-display-month new-display-year))
+      ;; Go to the new date.
+      (lorg-calendar-cursor-to-visible-date new-cursor-date)))
+  (run-hooks 'lorg-calendar-move-hook))
+
+(defun lorg-calendar-backward-day (arg)
+  "Move the cursor back ARG days.
+Moves forward if ARG is negative."
+  (interactive "p")
+  (lorg-calendar-forward-day (- arg)))
+
+(defun lorg-calendar-forward-week (arg)
+  "Move the cursor forward ARG weeks.
+Moves backward if ARG is negative."
+  (interactive "p")
+  (lorg-calendar-forward-day (* arg 7)))
+
+(defun lorg-calendar-backward-week (arg)
+  "Move the cursor back ARG weeks.
+Moves forward if ARG is negative."
+  (interactive "p")
+  (lorg-calendar-forward-day (* arg -7)))
 
 (defvar lorg-calendar-buffer "*Calendar*"
   "This is the `buffer-name` of the calendar buffer.")

@@ -58,7 +58,7 @@ This is a modification of:  http://homepage3.nifty.com/oatu/emacs/calendar.html"
         (cond
           ((called-interactively-p)
             (read-number
-              "Please choose the `displayed-year` (e.g., 2014):  " current-year))
+              "Please choose the `displayed-year` (e.g., 2014):  " 2014))
           (t
             (if year year (calendar-extract-year today)))))
       (style

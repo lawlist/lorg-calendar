@@ -13,7 +13,6 @@
 (require 'calendar)
 (require 'org)
 (require 'org-element)
-(require 'holidays)
 
 (eval-after-load "calendar" '(progn
   (define-key calendar-mode-map "<" 'lorg-calendar-backward-month)

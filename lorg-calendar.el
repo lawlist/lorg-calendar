@@ -106,6 +106,14 @@ are the month and year in the upper left-hand corner of the buffer.
 This is a modification of:  http://homepage3.nifty.com/oatu/emacs/calendar.html"
 (interactive)
   (let* (
+      (eval-sexp-fn
+        (lambda (list)
+          (let (res h err)
+            (sort
+              (dolist (p list res)
+                (if (setq h (eval p))
+                   (setq res (append h res))))
+          'calendar-date-compare))))
       (org-startup-folded nil)
       (today (lorg-calendar-current-date))
       (current-year (number-to-string (nth 5 (decode-time (current-time)))))
@@ -391,50 +399,20 @@ This is a modification of:  http://homepage3.nifty.com/oatu/emacs/calendar.html"
       (if narrowed (org-narrow-to-subtree)))
     (with-current-buffer (get-buffer lorg-calendar-buffer)
       ;; lorg-court-holidays
-      (dolist (holiday 
-        (let (res h err)
-          (sort
-            (dolist (p lorg-court-holidays res)
-              (if (setq h (eval p))
-                 (setq res (append h res))))
-            'calendar-date-compare)))
+      (dolist (holiday (funcall eval-sexp-fn lorg-court-holidays))
         (lorg-calendar-mark-visible-date (car holiday) lorg-court-holiday-face nil lorg-court-holiday nil nil nil))
       ;; lorg-court-appearances
-      (dolist (holiday 
-        (let (res h err)
-          (sort
-            (dolist (p lorg-court-appearances res)
-              (if (setq h (eval p))
-                 (setq res (append h res))))
-        'calendar-date-compare)))
-        (lorg-calendar-mark-visible-date (car holiday) lorg-court-appearance-face nil nil lorg-court-appearance nil nil))
+      (dolist (appearance (funcall eval-sexp-fn lorg-court-appearances))
+        (lorg-calendar-mark-visible-date (car appearance) lorg-court-appearance-face nil nil lorg-court-appearance nil nil))
       ;; lorg-appointments
-      (dolist (holiday
-        (let (res h err)
-          (sort
-            (dolist (p lorg-appointments res)
-              (if (setq h (eval p))
-                 (setq res (append h res))))
-        'calendar-date-compare)))
-        (lorg-calendar-mark-visible-date (car holiday) lorg-appointment-face nil nil nil appointment nil)) 
+      (dolist (appointment (funcall eval-sexp-fn lorg-appointments))
+        (lorg-calendar-mark-visible-date (car appointment) lorg-appointment-face nil nil nil appointment nil)) 
       ;; lorg-birthdays
-      (dolist (holiday
-        (let (res h err)
-          (sort
-            (dolist (p lorg-birthdays res)
-              (if (setq h (eval p))
-                 (setq res (append h res))))
-        'calendar-date-compare)))
-        (lorg-calendar-mark-visible-date (car holiday) lorg-birthday-face nil nil nil nil lorg-birthday))
+      (dolist (birthday (funcall eval-sexp-fn lorg-birthdays))
+        (lorg-calendar-mark-visible-date (car birthday) lorg-birthday-face nil nil nil nil lorg-birthday))
       ;; lorg-mouse-calendar-face markings
-      (dolist (holiday
-        (let (res h err)
-          (sort
-            (dolist (p lorg-mouse-marked res)
-              (if (setq h (eval p))
-                 (setq res (append h res))))
-            'calendar-date-compare)))
-        (lorg-calendar-mark-visible-date (car holiday) lorg-mouse-calendar-face))
+      (dolist (mouse-mark (funcall eval-sexp-fn lorg-mouse-marked))
+        (lorg-calendar-mark-visible-date (car mouse-mark) lorg-mouse-calendar-face))
     ;; lorg mark calendar -- END
       (cond
         ((and

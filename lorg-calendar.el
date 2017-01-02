@@ -13,6 +13,7 @@
 (require 'calendar)
 (require 'org)
 (require 'org-element)
+(require 'holidays)
 
 (eval-after-load "calendar" '(progn
   (define-key calendar-mode-map "<" 'lorg-calendar-backward-month)
@@ -151,7 +152,7 @@ This is a modification of:  http://homepage3.nifty.com/oatu/emacs/calendar.html"
       (lorg-birthday t)
       (lorg-court-appearance t)
       lorg-court-appearances
-      lorg-birthdays
+      ;; lorg-birthdays
       lorg-appointments
       narrowed
       element
@@ -388,14 +389,15 @@ This is a modification of:  http://homepage3.nifty.com/oatu/emacs/calendar.html"
             (setq lorg-appointments
               (append lorg-appointments
                 `((lorg-cal-sexp '(list ,month ,day ,year) (regexp-quote ,title))))))
-          (when (and
-                  deadline
-                  (string= todo-state "Waiting"))
-            ;; formatting of `lorg-cal-sexp` code provided by @phils
-            ;; http://stackoverflow.com/q/20715445/2112489
-            (setq lorg-birthdays
-              (append lorg-birthdays
-                `((lorg-cal-sexp '(list ,month ,day ,year) (regexp-quote ,title))))))  ))
+          ;; (when (and
+          ;;         deadline
+          ;;         (string= todo-state "Waiting"))
+          ;;   ;; formatting of `lorg-cal-sexp` code provided by @phils
+          ;;   ;; http://stackoverflow.com/q/20715445/2112489
+          ;;   (setq lorg-birthdays
+          ;;     (append lorg-birthdays
+          ;;       `((lorg-cal-sexp '(list ,month ,day ,year) (regexp-quote ,title))))))
+            ))
       (if narrowed (org-narrow-to-subtree)))
     (with-current-buffer (get-buffer lorg-calendar-buffer)
       ;; lorg-court-holidays
@@ -786,6 +788,49 @@ http://stackoverflow.com/a/21834918/2112489"
   (if (>= target-month displayed-month)
       displayed-year
     (1+ displayed-year)))
+
+(defun lorg-holiday-fixed (month day string)
+  "Holiday on MONTH, DAY (Gregorian) called STRING.
+If MONTH, DAY is visible, the value returned is the list (((MONTH DAY year)
+STRING)).  Returns nil if it is not visible in the current calendar window."
+  (cond
+    ((eq lorg-calendar-style 'twelve-months)
+      (let* (
+          (y (lorg-target-year-function month)) )
+        (list (list (list month day y) string))))
+    ((eq lorg-calendar-style 'three-months)
+      (let* (
+          (m displayed-month)
+          (y displayed-year) )
+        (calendar-increment-month m y (- 11 month))
+        (if (> m 9)                         ; Is November visible?
+            (list (list (list month day y) string)))))))
+
+(defcustom lorg-birthdays (mapcar 'purecopy '(
+  (lorg-holiday-fixed 1 2 "Jane Doe -- 01/02/1940")
+  (lorg-holiday-fixed 2 15 "John Doe -- 02/15/1963")
+  (lorg-holiday-fixed 3 2 "Seymoure Hersh -- 03/03/1999")
+  (lorg-holiday-fixed 3 3 "Jashua Smith -- 03/03/1964")
+  (lorg-holiday-fixed 3 5 "Frederick Holmes -- 03/05/1966")
+  (lorg-holiday-fixed 4 7 "Fannie Mae -- 04/07/1970")
+  (lorg-holiday-fixed 4 25 "Freddie Mack -- 04/25/1952")
+  (holiday-float 5 0 2 "Mother's Day -- the second Sunday in May")
+  (lorg-holiday-fixed 5 11 "George Lucas -- 05/11/1976")
+  (lorg-holiday-fixed 5 18 "Harry Potter -- 05/18")
+  (lorg-holiday-fixed 5 30 "Darth Vader -- 05/30/1972")
+  (lorg-holiday-fixed 6 7 "Jabba the Hut -- 06/07/2007")
+  (lorg-holiday-fixed 6 19 "Princess Lea -- 06/19/1983")
+  (lorg-holiday-fixed 7 14 "Super Man -- 07/14/1970")
+  (lorg-holiday-fixed 7 18 "Wonder Woman -- 07/18/1993")
+  (lorg-holiday-fixed 10 3 "Jenifer Lopez (DOB:  10/03/2011)")
+  (lorg-holiday-fixed 10 8 "Samuel Jacks (10/08/1965)")
+  (lorg-holiday-fixed 10 25 "C3PO -- 10/25/2007")
+  (lorg-holiday-fixed 11 14 "R2D2 -- 11/14/1981")
+  (lorg-holiday-fixed 12 21 "Yoda -- 12/21/1958")
+  (lorg-holiday-fixed 12 22 "Wookie -- 12/22/1967") ))
+  "Birthdays."
+  :type 'sexp
+  :group 'holidays)
 
 (defcustom lorg-court-holidays
   (mapcar 'purecopy

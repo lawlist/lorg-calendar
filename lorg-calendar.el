@@ -11,6 +11,7 @@
 ;;   date previously marked with the left-click will remove the overlay.
 
 (require 'calendar)
+(require 'holidays)
 (require 'org)
 (require 'org-element)
 

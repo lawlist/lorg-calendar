@@ -23,4 +23,4 @@ I synchronize my tasks/events with Toodledo over the internet with a custom modi
 
 Here is a link to an even more simplified version of the 12-month scrolling calendar that I posted on stackoverflow.com:  http://stackoverflow.com/a/21409154/2112489
 
-![screenshot](http://www.lawlist.com/images/calendar_example.png)
+![screenshot](https://www.lawlist.com/images/calendar_example.png)

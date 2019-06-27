@@ -23,33 +23,30 @@ I synchronize my tasks/events with Toodledo over the internet with a custom modi
 
 Here is a link to an even more simplified version of the 12-month scrolling calendar that I posted on stackoverflow.com:  http://stackoverflow.com/a/21409154/2112489
 
-            **12-MONTH CALENDAR -- SCROLLS BY MONTH (FORWARDS / BACKWARDS)**
-
-  <!-- language: lang-lisp -->
+**12-MONTH CALENDAR -- SCROLLS BY MONTH (FORWARDS / BACKWARDS)**
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;;; Scroll a yearly calendar by month -- in a forwards or backwards direction. ;;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    
+
     (eval-after-load "calendar" '(progn
       (define-key calendar-mode-map "<" 'lawlist-scroll-year-calendar-backward)
       (define-key calendar-mode-map ">" 'lawlist-scroll-year-calendar-forward) ))
-    
+
     (defun year-calendar (&optional month year)
       "Generate a one (1) year calendar that can be scrolled by month in each direction.
     This is a modification of:  http://homepage3.nifty.com/oatu/emacs/calendar.html
     See also:  http://ivan.kanis.fr/caly.el"
     (interactive)
       (require 'calendar)
-      (let* (
-          (current-year (number-to-string (nth 5 (decode-time (current-time)))))
-          (month (if month month
-            (string-to-number
-              (read-string "Please enter a month number (e.g., 1):  " nil nil "1"))))
-          (year (if year year
-            (string-to-number
-              (read-string "Please enter a year (e.g., 2014):  "
-                nil nil current-year)))))
+      (let* ((current-year (number-to-string (nth 5 (decode-time (current-time)))))
+             (month (if month month
+               (string-to-number
+                 (read-string "Please enter a month number (e.g., 1):  " nil nil "1"))))
+             (year (if year year
+               (string-to-number
+                 (read-string "Please enter a year (e.g., 2014):  "
+                   nil nil current-year)))))
         (switch-to-buffer (get-buffer-create calendar-buffer))
         (when (not (eq major-mode 'calendar-mode))
           (calendar-mode))
@@ -84,7 +81,7 @@ Here is a link to an even more simplified version of the 12-month scrolling cale
         (widen)
         (goto-char (point-min))
         (setq buffer-read-only t)))
-    
+
     (defun lawlist-scroll-year-calendar-forward (&optional arg event)
       "Scroll the yearly calendar by month in a forward direction."
       (interactive (list (prefix-numeric-value current-prefix-arg)
@@ -100,7 +97,7 @@ Here is a link to an even more simplified version of the 12-month scrolling cale
             (year-calendar month year)))
         (goto-char (point-min))
         (run-hooks 'calendar-move-hook)))
-    
+
     (defun lawlist-scroll-year-calendar-backward (&optional arg event)
       "Scroll the yearly calendar by month in a backward direction."
       (interactive (list (prefix-numeric-value current-prefix-arg)

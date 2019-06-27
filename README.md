@@ -31,7 +31,7 @@ Here is a link to an even more simplified version of the 12-month scrolling cale
 
     (eval-after-load "calendar" '(progn
       (define-key calendar-mode-map "<" 'lawlist-scroll-year-calendar-backward)
-      (define-key calendar-mode-map ">" 'lawlist-scroll-year-calendar-forward) ))
+      (define-key calendar-mode-map ">" 'lawlist-scroll-year-calendar-forward)))
 
     (defun year-calendar (&optional month year)
       "Generate a one (1) year calendar that can be scrolled by month in each direction.

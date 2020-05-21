@@ -23,6 +23,70 @@ In my own setup (not available to the public) I use a custom modified version of
 
 I synchronize my tasks/events with Toodledo over the internet with a custom modified version of `org-toodledo` (not available to the public), which supports all keywords and priorities (plus an extra field or two such as location); and, that is why the tasks/events in the example are in a specific format.
 
+For those users looking to create a custom calendar view, here is an example of how to extract the raw data that goes into creating an `*Org-Agenda*` view:
+
+    ;;; https://emacs.stackexchange.com/a/12563/2287
+
+    ;;; The following is a condensed example of how to extract the data that goes
+    ;;; into an `*Org Agenda*` buffer when normally using `org-agenda-list`, with
+    ;;; `org-agenda-entry-types` such as `:deadline`, `:scheduled`, `:timestamp`,
+    ;;; `sexp`, `:deadline*`, and `:scheduled*`.  The range of dates -- `begin`
+    ;;; and `end` -- should be in a Gregorian list format -- e.g., `'(6 1 2015)`.
+    ;;; The customizable let-bound options are `org-agenda-prefix-format` and
+    ;;; `org-agenda-entry-types`.  The function returns a result in the format of
+    ;;;  a list.
+
+    (require 'calendar)
+    (require 'org)
+    (require 'org-agenda)
+    (require 'cl)
+
+    ;; Portions of following code were extracted from:
+    ;;   https://github.com/kiwanami/emacs-calfw written by Masashi Sakurai
+    ;; Said code has been modified by @lawlist hereinbelow.
+    ;;
+    (defun org-get-entries-fn (begin end)
+    "Return org schedule items between BEGIN and END.
+    USAGE:  (org-get-entries-fn '(6 1 2015) '(12 31 2020))"
+      (unless
+          (and
+            (calendar-date-is-valid-p begin)
+            (calendar-date-is-valid-p end))
+        (let ((debug-on-quit nil))
+          (signal 'quit '("One or both of your Gregorian dates are invalid."))))
+      (let ((org-agenda-buffer nil) ;; prevent error from `org-compile-prefix-format'
+            ;; The variable `org-agenda-only-exact-dates' is apparently not operational.
+            (org-scheduled-past-days 0) ;; avoid duplicate entries for overdue items
+            (org-agenda-prefix-format "• ")
+            (org-agenda-entry-types '(:scheduled))
+            (date-after
+              (lambda (date num)
+                "Return the date after NUM days from DATE."
+                (calendar-gregorian-from-absolute
+                 (+ (calendar-absolute-from-gregorian date) num))))
+            (enumerate-days
+              (lambda (begin end)
+                "Enumerate date objects between BEGIN and END."
+                (when (> (calendar-absolute-from-gregorian begin)
+                         (calendar-absolute-from-gregorian end))
+                  (error "Invalid period : %S - %S" begin end))
+                (let ((d begin) ret (cont t))
+                  (while cont
+                    (push (copy-sequence d) ret)
+                    (setq cont (not (equal d end)))
+                    (setq d (funcall date-after d 1)))
+                  (nreverse ret))))
+            result)
+        (org-compile-prefix-format nil)
+        (setq result
+          (loop for date in (funcall enumerate-days begin end) append
+            (loop for file in (org-agenda-files nil 'ifmode) append
+              (progn
+                (org-check-agenda-file file)
+                (apply 'org-agenda-get-day-entries file date org-agenda-entry-types)))))
+        result))
+
+
 Here is a link to an even more simplified version of the 12-month scrolling calendar that I posted on stackoverflow.com:  http://stackoverflow.com/a/21409154/2112489
 
 **12-MONTH CALENDAR -- SCROLLS BY MONTH (FORWARDS / BACKWARDS)**

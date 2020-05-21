@@ -12,6 +12,17 @@
 
 (require 'calendar)
 (require 'holidays)
+
+;;; FIXME:  The version of `org-mode' that ships with Emacs 26 is finicky --
+;;; it is probably a bug in the loading process of the `org-element.el' library.
+;;; The following is a workaround to avoid a loading error.
+(defun org-element-update-syntax ()
+  "Update parser internals."
+  (interactive)
+  (require 'org-element)
+  (org-element--set-regexps)
+  (org-element-cache-reset 'all))
+
 (require 'org)
 (require 'org-element)
 

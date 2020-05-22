@@ -9,7 +9,7 @@ lorg-calendar.el
       which will also copy the date to the kill-ring.  Left-clicking on a
       date previously marked with the left-click will remove the overlay.
 
-[This example has been tested is working on Emacs version 26.3.50 (bearing commit dated 11/27/2019 with hash 7497ee44b471f69ce59d131a6dece261e871534f).]
+[This example has been tested and is working with Emacs version 26.3.50 (bearing commit dated 11/27/2019 with hash 7497ee44b471f69ce59d131a6dece261e871534f).]
 
 `lorg-calendar` is a simplified variation of a custom calendar that I use daily, which is on Github just in case anyone is interested in seeing how it works.  It does not come with any instructions other than the first few lines in the comments at the beginning of the file (same as above).  It is an Emacs 3-month or 12-month calendar that scrolls (forwards/backwards in time) and is able to mark birthdays, holidays, appointments, court appearances, and dates previously marked with the mouse.
 

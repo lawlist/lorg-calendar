@@ -92,12 +92,30 @@ Here is a link to an even more simplified version of the 12-month scrolling cale
 **12-MONTH CALENDAR -- SCROLLS BY MONTH (FORWARDS / BACKWARDS)**
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;;;                                                                            ;;;
     ;;; Scroll a yearly calendar by month -- in a forwards or backwards direction. ;;;
+    ;;;                                                                            ;;;
+    ;;; To try out this example, evaluate the entire code snippet and type:        ;;;
+    ;;;                                                                            ;;;
+    ;;;     M-x year-calendar                                                      ;;;
+    ;;;                                                                            ;;;
+    ;;; To scroll forward by month, type the key:  >                               ;;;
+    ;;;                                                                            ;;;
+    ;;; To scroll backward by month, type the key:  <                              ;;;
+    ;;;                                                                            ;;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     (eval-after-load "calendar" '(progn
       (define-key calendar-mode-map "<" 'lawlist-scroll-year-calendar-backward)
-      (define-key calendar-mode-map ">" 'lawlist-scroll-year-calendar-forward)))
+      (define-key calendar-mode-map ">" 'lawlist-scroll-year-calendar-forward) ))
+
+    (defmacro lawlist-calendar-for-loop (var from init to final do &rest body)
+      "Execute a for loop.
+    Evaluate BODY with VAR bound to successive integers from INIT to FINAL,
+    inclusive.  The standard macro `dotimes' is preferable in most cases."
+      `(let ((,var (1- ,init)))
+        (while (>= ,final (setq ,var (1+ ,var)))
+          ,@body)))
 
     (defun year-calendar (&optional month year)
       "Generate a one (1) year calendar that can be scrolled by month in each direction.
@@ -121,9 +139,9 @@ Here is a link to an even more simplified version of the 12-month scrolling cale
         (setq buffer-read-only nil)
         (erase-buffer)
         ;; horizontal rows
-        (calendar-for-loop j from 0 to 3 do
+        (lawlist-calendar-for-loop j from 0 to 3 do
           ;; vertical columns
-          (calendar-for-loop i from 0 to 2 do
+          (lawlist-calendar-for-loop i from 0 to 2 do
             (calendar-generate-month
               ;; month
               (cond
@@ -156,7 +174,8 @@ Here is a link to an even more simplified version of the 12-month scrolling cale
       (save-selected-window
         (if (setq event (event-start event)) (select-window (posn-window event)))
         (unless (zerop arg)
-          (let ((month displayed-month)
+          (let* (
+                (month displayed-month)
                 (year displayed-year))
             (calendar-increment-month month year arg)
             (year-calendar month year)))
@@ -168,6 +187,7 @@ Here is a link to an even more simplified version of the 12-month scrolling cale
       (interactive (list (prefix-numeric-value current-prefix-arg)
                          last-nonmenu-event))
       (lawlist-scroll-year-calendar-forward (- (or arg 1)) event))
+
 ___
 
-![screenshot](https://www.lawlist.com/images/calendar_example.png)
+![Example](https://www.lawlist.com/images/calendar_example.png)

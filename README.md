@@ -174,8 +174,7 @@ Here is a link to an even more simplified version of the 12-month scrolling cale
       (save-selected-window
         (if (setq event (event-start event)) (select-window (posn-window event)))
         (unless (zerop arg)
-          (let* (
-                (month displayed-month)
+          (let ((month displayed-month)
                 (year displayed-year))
             (calendar-increment-month month year arg)
             (year-calendar month year)))

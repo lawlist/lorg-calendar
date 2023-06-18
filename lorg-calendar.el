@@ -690,7 +690,7 @@ use instead of point."
                 (if (not (looking-at " "))
                     (re-search-backward "[^0-9]"))
                 (list month
-                      (string-to-int
+                      (string-to-number
                        (buffer-substring (1+ (point)) (+ 4 (point))))
                       year))
             (if (looking-at "\\*")

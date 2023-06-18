@@ -1230,7 +1230,10 @@ Optional integer OFFSET is a number of days from the current date."
           (window-in-direction 'below))
         (t
           (split-window (selected-window) nil 'below)))))
-  (window--display-buffer buffer window 'window alist display-buffer-mark-dedicated)))
+  ;;; At some point subsequent to Emacs 26.3.50, `window--display-buffer' was
+  ;;; modified to eliminate the fifth argument DEDICATED.  Previously, it was
+  ;;; possible to use `display-buffer-mark-dedicated' for DEDICATED argument.
+  (window--display-buffer buffer window 'window alist)))
 
 (defun lorg-display-buffer-left (buffer alist)
 "(1) If `buffer` is already displayed, then display it again in the same window.
@@ -1251,7 +1254,10 @@ displayed, and if there is a window to the right, then use the selected window.
           (selected-window))
         (t
           (split-window (selected-window) nil 'left)))))
-  (window--display-buffer buffer window 'window alist display-buffer-mark-dedicated)))
+  ;;; At some point subsequent to Emacs 26.3.50, `window--display-buffer' was
+  ;;; modified to eliminate the fifth argument DEDICATED.  Previously, it was
+  ;;; possible to use `display-buffer-mark-dedicated' for DEDICATED argument.
+  (window--display-buffer buffer window 'window alist)))
 
 (defun lorg-display-buffer-right (buffer alist)
 "(1) If `buffer` is already displayed, then display it again in the same window.
@@ -1272,7 +1278,10 @@ displayed, and if there is a window to the left, then use the selected window.
           (selected-window))
         (t
           (split-window (selected-window) nil 'right)))))
-  (window--display-buffer buffer window 'window alist display-buffer-mark-dedicated)))
+  ;;; At some point subsequent to Emacs 26.3.50, `window--display-buffer' was
+  ;;; modified to eliminate the fifth argument DEDICATED.  Previously, it was
+  ;;; possible to use `display-buffer-mark-dedicated' for DEDICATED argument.
+  (window--display-buffer buffer window 'window alist)))
 
 (defun lorg-calendar-cursor-to-nearest-date ()
   "Move the cursor to the closest date.

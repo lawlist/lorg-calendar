@@ -90,14 +90,6 @@ Moves forward if ARG is negative."
 "A symbol -- 'twelve-months or 'three-months")
 (make-variable-buffer-local 'lorg-calendar-style)
 
-(defun lorg-calendar-style-function ()
-  (cond
-    (lorg-calendar-style lorg-calendar-style)
-    ((get-buffer-window lorg-calendar-buffer (selected-frame))
-      (with-current-buffer (get-buffer lorg-calendar-buffer)
-        lorg-calendar-style))
-    (t 'three-months)))
-
 (defmacro lorg-calendar-for-loop (var from init to final do &rest body)
   "Execute a for loop.
 Evaluate BODY with VAR bound to successive integers from INIT to FINAL,
@@ -153,8 +145,10 @@ This is a modification of:  http://homepage3.nifty.com/oatu/emacs/calendar.html"
                   'twelve-months)
                 (t
                   'twelve-months) )))
-          (t
-            (lorg-calendar-style-function))))
+          ((get-buffer-window lorg-calendar-buffer (selected-frame))
+             (with-current-buffer (get-buffer lorg-calendar-buffer)
+               lorg-calendar-style))
+          (t 'three-months)))
       (lorg-court-holiday t)
       (appointment t)
       (lorg-birthday t)
@@ -636,9 +630,11 @@ for the document of time format string"
 
 (defun lorg-calendar-date-is-visible-p (date)
   "Return non-nil if DATE is valid and is visible in the lorg-calendar window."
-  (let ((lorg-calendar-style (lorg-calendar-style-function)))
+  (let ((style (and (get-buffer-window lorg-calendar-buffer (selected-frame))
+                    (with-current-buffer (get-buffer lorg-calendar-buffer)
+                      lorg-calendar-style))))
     (cond
-      ((eq lorg-calendar-style 'twelve-months)
+      ((eq style 'twelve-months)
         (let* ((incoming-test-date (calendar-absolute-from-gregorian date))
                (beginning-date (calendar-absolute-from-gregorian (list displayed-month 1 displayed-year)))
                (ending-date (+ 364 beginning-date)))
@@ -658,9 +654,11 @@ If cursor is not on a specific date, signals an error if optional parameter
 ERROR is non-nil, otherwise just returns nil.
 If EVENT is non-nil, it's an event indicating the buffer position to
 use instead of point."
-  (let ((lorg-calendar-style (lorg-calendar-style-function)))
+  (let ((style (and (get-buffer-window lorg-calendar-buffer (selected-frame))
+                    (with-current-buffer (get-buffer lorg-calendar-buffer)
+                      lorg-calendar-style))))
     (cond
-      ((eq lorg-calendar-style 'twelve-months)
+      ((eq style 'twelve-months)
         (let* ((column-segment (/ (current-column) 25))
                (line-segment (/ (count-lines (point-min) (point)) 9))
                (current-block (+ (+ (* line-segment 3) column-segment) 1))
@@ -729,9 +727,11 @@ use instead of point."
 
 (defun lorg-calendar-cursor-to-visible-date (date)
   "Move the cursor to DATE that is on the screen."
-  (let ((lorg-calendar-style (lorg-calendar-style-function)))
+  (let ((style (and (get-buffer-window lorg-calendar-buffer (selected-frame))
+                    (with-current-buffer (get-buffer lorg-calendar-buffer)
+                      lorg-calendar-style))))
     (cond
-      ((eq lorg-calendar-style 'twelve-months)
+      ((eq style 'twelve-months)
         (let* (
             (month (calendar-extract-month date))
             (day (calendar-extract-day date))
@@ -745,12 +745,12 @@ use instead of point."
                 (- (+ month 12) displayed-month)))
             (rows (/ difference 3))
             (cols (% difference 3))
-            (rowmove (* 9 rows))   
+            (rowmove (* 9 rows))
             (colmove (+ 6 (* 25 cols))) )
           (goto-line
             (+ 3
               rowmove
-                (/ (+ day  -1
+                (/ (+ day -1
                   (mod
                     (- (calendar-day-of-week (list month 1 year)) calendar-week-start-day)
                       7))
@@ -1285,22 +1285,22 @@ Returns the list (month day year) giving the cursor position."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; PLAIN 12-MONTH ROTATING CALENDAR WITHOUT SAMPLE EVENTS
 
-(defvar lawlist-twelve-month-mode-map
+(defvar lorg-year-calendar-mode-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map calendar-mode-map)
-    (define-key map "<" 'lawlist-year-calendar-backward-month)
-    (define-key map ">" 'lawlist-year-calendar-forward-month)
-    (define-key map "." 'lawlist-year-calendar-goto-today)
+    (define-key map "<" 'lorg-year-calendar-backward-month)
+    (define-key map ">" 'lorg-year-calendar-forward-month)
+    (define-key map "." 'lorg-year-calendar-goto-today)
     (define-key map [mouse-1] 'lorg-mark-mouse-set-point)
-    (define-key map [up]    'lawlist-year-calendar-backward-week)
-    (define-key map [down]  'lawlist-year-calendar-forward-week)
-    (define-key map [right] 'lawlist-year-calendar-forward-day)
-    (define-key map [left]  'lawlist-year-calendar-backward-day)
+    (define-key map [up]    'lorg-year-calendar-backward-week)
+    (define-key map [down]  'lorg-year-calendar-forward-week)
+    (define-key map [right] 'lorg-year-calendar-forward-day)
+    (define-key map [left]  'lorg-year-calendar-backward-day)
     map)
   "Local keymap for `tda-disabled-mode' buffers.")
 
 ;;;###autoload
-(defun lawlist-year-calendar (&optional month year)
+(defun lorg-year-calendar (&optional month year)
   "Generate a one (1) year calendar that can be scrolled by month in each direction.
 This is a modification of:  http://homepage3.nifty.com/oatu/emacs/calendar.html
 See also:  http://ivan.kanis.fr/caly.el"
@@ -1317,7 +1317,7 @@ See also:  http://ivan.kanis.fr/caly.el"
     (switch-to-buffer (get-buffer-create calendar-buffer))
     (when (not (eq major-mode 'calendar-mode))
       (calendar-mode))
-    (use-local-map lawlist-twelve-month-mode-map)
+    (use-local-map lorg-year-calendar-mode-map)
     (setq lorg-calendar-style 'twelve-months)
     (setq displayed-month month)
     (setq displayed-year year)
@@ -1351,7 +1351,7 @@ See also:  http://ivan.kanis.fr/caly.el"
     (goto-char (point-min))
     (setq buffer-read-only t)))
 
-(defun lawlist-year-calendar-forward-month (&optional arg event)
+(defun lorg-year-calendar-forward-month (&optional arg event)
   "Scroll the yearly calendar by month in a forward direction."
   (interactive (list (prefix-numeric-value current-prefix-arg)
                      last-nonmenu-event))
@@ -1362,17 +1362,17 @@ See also:  http://ivan.kanis.fr/caly.el"
       (let ((month displayed-month)
             (year displayed-year))
         (calendar-increment-month month year arg)
-        (lawlist-year-calendar month year)))
+        (lorg-year-calendar month year)))
     (goto-char (point-min))
     (run-hooks 'calendar-move-hook)))
 
-(defun lawlist-year-calendar-backward-month (&optional arg event)
+(defun lorg-year-calendar-backward-month (&optional arg event)
   "Scroll the yearly calendar by month in a backward direction."
   (interactive (list (prefix-numeric-value current-prefix-arg)
                      last-nonmenu-event))
-  (lawlist-year-calendar-forward-month (- (or arg 1)) event))
+  (lorg-year-calendar-forward-month (- (or arg 1)) event))
 
-(defun lawlist-year-calendar-forward-day (arg)
+(defun lorg-year-calendar-forward-day (arg)
   "Move the cursor forward ARG days.  Moves backward if ARG is negative."
   (interactive "p")
   (unless (zerop arg)
@@ -1391,7 +1391,7 @@ See also:  http://ivan.kanis.fr/caly.el"
                    (= new-displayed-year displayed-year))
         (let ((old-date (lorg-calendar-cursor-to-date))
               (today (lorg-calendar-current-date)))
-          (lawlist-year-calendar new-displayed-month new-displayed-year)
+          (lorg-year-calendar new-displayed-month new-displayed-year)
           (lorg-calendar-cursor-to-visible-date
             (cond
               ((lorg-calendar-date-is-visible-p old-date) old-date)
@@ -1401,25 +1401,25 @@ See also:  http://ivan.kanis.fr/caly.el"
       (lorg-calendar-cursor-to-visible-date new-cursor-date)))
   (run-hooks 'lorg-calendar-move-hook))
 
-(defun lawlist-year-calendar-backward-day (arg)
+(defun lorg-year-calendar-backward-day (arg)
   "Move the cursor back ARG days.
 Moves forward if ARG is negative."
   (interactive "p")
-  (lawlist-year-calendar-forward-day (- arg)))
+  (lorg-year-calendar-forward-day (- arg)))
 
-(defun lawlist-year-calendar-forward-week (arg)
+(defun lorg-year-calendar-forward-week (arg)
   "Move the cursor forward ARG weeks.
 Moves backward if ARG is negative."
   (interactive "p")
-  (lawlist-year-calendar-forward-day (* arg 7)))
+  (lorg-year-calendar-forward-day (* arg 7)))
 
-(defun lawlist-year-calendar-backward-week (arg)
+(defun lorg-year-calendar-backward-week (arg)
   "Move the cursor back ARG weeks.
 Moves forward if ARG is negative."
   (interactive "p")
-  (lawlist-year-calendar-forward-day (* arg -7)))
+  (lorg-year-calendar-forward-day (* arg -7)))
 
-(defun lawlist-year-calendar-goto-today ()
+(defun lorg-year-calendar-goto-today ()
   "Reposition the lorg-calendar window so the current date is visible."
   (interactive)
   (let* ((today (lorg-calendar-current-date))
@@ -1428,7 +1428,7 @@ Moves forward if ARG is negative."
          (year (calendar-extract-year today)))
     (if (not (lorg-calendar-date-is-visible-p today))
       (progn
-        (lawlist-year-calendar month year)
+        (lorg-year-calendar month year)
         (lorg-calendar-cursor-to-visible-date today))
       (calendar-update-mode-line)
       (lorg-calendar-cursor-to-visible-date today))))

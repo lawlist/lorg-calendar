@@ -47,12 +47,12 @@
            (new-cursor-date
             (calendar-gregorian-from-absolute
              (+ (calendar-absolute-from-gregorian cursor-date) arg)))
-           (new-display-month (calendar-extract-month new-cursor-date))
-           (new-display-year (calendar-extract-year new-cursor-date)))
+           (new-displayed-month (calendar-extract-month new-cursor-date))
+           (new-displayed-year (calendar-extract-year new-cursor-date)))
       ;; Put the new month on the screen, if needed.
       (unless (and (lorg-calendar-date-is-visible-p new-cursor-date)
-                   (= new-display-month displayed-month)
-                   (= new-display-year displayed-year))
+                   (= new-displayed-month displayed-month)
+                   (= new-displayed-year displayed-year))
         (let ((old-date (lorg-calendar-cursor-to-date))
               (today (lorg-calendar-current-date)))
           (lorg-calendar-generate new-displayed-month new-displayed-year)

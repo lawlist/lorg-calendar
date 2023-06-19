@@ -72,8 +72,7 @@ Moves backward if ARG is negative."
   (run-hooks 'lorg-calendar-move-hook))
 
 (defun lorg-calendar-backward-day (arg)
-  "Move the cursor back ARG days.
-Moves forward if ARG is negative."
+  "Move the cursor back ARG days.  Moves forward if ARG is negative."
   (interactive "p")
   (lorg-calendar-forward-day (- arg)))
 

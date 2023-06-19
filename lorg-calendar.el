@@ -36,6 +36,7 @@
   (define-key calendar-mode-map [right] 'lorg-calendar-forward-day)
   (define-key calendar-mode-map [left]  'lorg-calendar-backward-day) ))
 
+;;;###autoload
 (defun lorg-calendar-other-month (month year &optional event)
   "Display a three-month lawlist-calendar centered around MONTH and YEAR.
 EVENT is an event like `last-nonmenu-event'."
@@ -110,6 +111,15 @@ Moves forward if ARG is negative."
         lorg-calendar-style))
     (t 'three-months)))
 
+(defmacro lorg-calendar-for-loop (var from init to final do &rest body)
+  "Execute a for loop.
+Evaluate BODY with VAR bound to successive integers from INIT to FINAL,
+inclusive.  The standard macro `dotimes' is preferable in most cases."
+  `(let ((,var (1- ,init)))
+    (while (>= ,final (setq ,var (1+ ,var)))
+      ,@body)))
+
+;;;###autoload
 (defun lorg-calendar-generate (&optional month year)
   "Generate a 3-month or 12-month Gregorian calendar.  The `displayed-month`
 and `displayed-year` in a 3-month calendar are the month and year in the
@@ -148,7 +158,7 @@ This is a modification of:  http://homepage3.nifty.com/oatu/emacs/calendar.html"
           ((called-interactively-p)
             (lorg-message
               "Please choose letter a or b:  [a] 3-month calendar; or, [b] 12-month calendar ?")
-            (let* ((selected-calendar-style (read-char-exclusive)))
+            (let ((selected-calendar-style (read-char-exclusive)))
               (cond
                 ((eq selected-calendar-style ?a)
                   'three-months)
@@ -449,11 +459,10 @@ This is a modification of:  http://homepage3.nifty.com/oatu/emacs/calendar.html"
 (make-variable-buffer-local 'lorg-mouse-marked)
 
 (defun lorg-mouse-marked ()
-  (let* (
-      lorg-mouse-marked-date
-      lorg-mouse-marked-day
-      lorg-mouse-marked-month
-      lorg-mouse-marked-year)
+  (let (lorg-mouse-marked-date
+        lorg-mouse-marked-day
+        lorg-mouse-marked-month
+        lorg-mouse-marked-year)
     (setq lorg-mouse-marked nil)
     (when (get-buffer lorg-calendar-buffer)
       (with-current-buffer (get-buffer lorg-calendar-buffer)
@@ -486,9 +495,7 @@ This is a modification of:  http://homepage3.nifty.com/oatu/emacs/calendar.html"
       (lorg-mouse-marked)
       (lorg-calendar-copy-date nil))
     (lorg-calendar-copy-date nil)
-    (let* (
-        beg
-        end)
+    (let (beg end)
       (cond
         ;; This mapcar overlay snippet was borrowed from a function written by Drew Adams
         ;; `mark-visible-calendar-date` at http://www.emacswiki.org/emacs/calendar%2B.el
@@ -645,10 +652,9 @@ for the document of time format string"
   (let ((lorg-calendar-style (lorg-calendar-style-function)))
     (cond
       ((eq lorg-calendar-style 'twelve-months)
-        (let* (
-            (incoming-test-date (calendar-absolute-from-gregorian date))
-            (beginning-date (calendar-absolute-from-gregorian (list displayed-month 1 displayed-year)))
-            (ending-date (+ 364 beginning-date)))
+        (let* ((incoming-test-date (calendar-absolute-from-gregorian date))
+               (beginning-date (calendar-absolute-from-gregorian (list displayed-month 1 displayed-year)))
+               (ending-date (+ 364 beginning-date)))
           (and
             (>= incoming-test-date beginning-date)
             (<= incoming-test-date ending-date))))
@@ -769,10 +775,9 @@ use instead of point."
                   (- (calendar-day-of-week date) calendar-week-start-day)
                     7))))))
       (t
-        (let* (
-            (month (calendar-extract-month date))
-            (day (calendar-extract-day date))
-            (year (calendar-extract-year date)))
+        (let ((month (calendar-extract-month date))
+              (day (calendar-extract-day date))
+              (year (calendar-extract-year date)))
           (goto-char (point-min))
           (forward-line (+ calendar-first-date-row -1
                            (/ (+ day -1
@@ -806,13 +811,11 @@ If MONTH, DAY is visible, the value returned is the list (((MONTH DAY year)
 STRING)).  Returns nil if it is not visible in the current calendar window."
   (cond
     ((eq lorg-calendar-style 'twelve-months)
-      (let* (
-          (y (lorg-target-year-function month)) )
+      (let ((y (lorg-target-year-function month)))
         (list (list (list month day y) string))))
     ((eq lorg-calendar-style 'three-months)
-      (let* (
-          (m displayed-month)
-          (y displayed-year) )
+      (let ((m displayed-month)
+            (y displayed-year))
         (calendar-increment-month m y (- 11 month))
         (if (> m 9)                         ; Is November visible?
             (list (list (list month day y) string)))))))
@@ -866,9 +869,8 @@ STRING)).  Returns nil if it is not visible in the current calendar window."
 (defun lorg-new-year-day ()
   (cond
     ((eq lorg-calendar-style 'twelve-months)
-      (let* (
-          (y (lorg-target-year-function 1))
-          (d (calendar-day-of-week (list 1 1 y))) )
+      (let* ((y (lorg-target-year-function 1))
+             (d (calendar-day-of-week (list 1 1 y))) )
         (cond 
           ((= d 6) ;; Saturday
             (list (list (list 1 3 y) "New Year + 2")))
@@ -877,9 +879,8 @@ STRING)).  Returns nil if it is not visible in the current calendar window."
           (t
             (list (list (list 1 1 y) "New Year"))))) )
     ((eq lorg-calendar-style 'three-months)
-      (let* (
-          (y displayed-year)
-          (d (calendar-day-of-week (list 1 1 y))) )
+      (let* ((y displayed-year)
+             (d (calendar-day-of-week (list 1 1 y))))
         (cond
           ((<= displayed-month 2)
             (cond 
@@ -903,9 +904,8 @@ STRING)).  Returns nil if it is not visible in the current calendar window."
 (defun lorg-lincoln-day ()
   (cond
     ((eq lorg-calendar-style 'twelve-months)
-      (let* (
-          (y (lorg-target-year-function 2))
-          (d (calendar-day-of-week (list 2 12 y))) )
+      (let* ((y (lorg-target-year-function 2))
+             (d (calendar-day-of-week (list 2 12 y))))
         (cond
           ((= d 6)
             (list (list (list 2 11 y) "Lincoln Day")))
@@ -914,9 +914,8 @@ STRING)).  Returns nil if it is not visible in the current calendar window."
           (t
             (list (list (list 2 12 y) "Lincoln Day")) ))))
     ((eq lorg-calendar-style 'three-months)
-      (let* (
-          (y displayed-year)
-          (d (calendar-day-of-week (list 2 12 y))) )
+      (let* ((y displayed-year)
+             (d (calendar-day-of-week (list 2 12 y))))
         (when (or (= displayed-month 1) (= displayed-month 2) (= displayed-month 3))
           (cond
             ((= d 6)
@@ -929,9 +928,8 @@ STRING)).  Returns nil if it is not visible in the current calendar window."
 (defun lorg-cesar-chavez-day ()
   (cond
     ((eq lorg-calendar-style 'twelve-months)
-      (let* (
-          (y (lorg-target-year-function 3))
-          (d (calendar-day-of-week (list 3 31 y))) )
+      (let* ((y (lorg-target-year-function 3))
+             (d (calendar-day-of-week (list 3 31 y))))
         (cond
           ((= d 6)
             (list (list (list 3 30 y) "Cesar Chavez Day")))
@@ -940,9 +938,8 @@ STRING)).  Returns nil if it is not visible in the current calendar window."
           (t
             (list (list (list 3 31 y) "Cesar Chavez Day")) ))))
     ((eq lorg-calendar-style 'three-months)
-      (let* (
-          (y displayed-year)
-          (d (calendar-day-of-week (list 3 31 y))) )
+      (let* ((y displayed-year)
+             (d (calendar-day-of-week (list 3 31 y))))
         (cond
           ((and (= d 6) (or (= displayed-month 2) (= displayed-month 3) (= displayed-month 4)))
             (list (list (list 3 30 y) "Cesar Chavez Day")))
@@ -954,20 +951,18 @@ STRING)).  Returns nil if it is not visible in the current calendar window."
 (defun lorg-independence-day ()
   (cond
     ((eq lorg-calendar-style 'twelve-months)
-      (let* (
-          (y (lorg-target-year-function 7))
-          (d (calendar-day-of-week (list 7 4 y))) )
+      (let* ((y (lorg-target-year-function 7))
+             (d (calendar-day-of-week (list 7 4 y))) )
         (cond
-	          ((= d 6)
+          ((= d 6)
             (list (list (list 7 3 y) "Independence Day")))
           ((= d 0)
             (list (list (list 7 5 y) "Independence Day")))
           (t
             (list (list (list 7 4 y) "Independence Day")) ))))
     ((eq lorg-calendar-style 'three-months)
-      (let* (
-          (y displayed-year)
-          (d (calendar-day-of-week (list 7 4 y))) )
+      (let* ((y displayed-year)
+             (d (calendar-day-of-week (list 7 4 y))))
         (when (or (= displayed-month 6) (= displayed-month 7) (= displayed-month 8))
           (cond
             ((= d 6)
@@ -980,9 +975,8 @@ STRING)).  Returns nil if it is not visible in the current calendar window."
 (defun lorg-veterans-day ()
   (cond
     ((eq lorg-calendar-style 'twelve-months)
-      (let* (
-          (y (lorg-target-year-function 11))
-          (d (calendar-day-of-week (list 11 11 y))) )
+      (let* ((y (lorg-target-year-function 11))
+             (d (calendar-day-of-week (list 11 11 y))))
         (cond
           ((= d 6)
             (list (list (list 11 10 y) "Veteran's Day")))
@@ -991,9 +985,8 @@ STRING)).  Returns nil if it is not visible in the current calendar window."
           (t
             (list (list (list 11 11 y) "Veteran's Day")) ))))
     ((eq lorg-calendar-style 'three-months)
-      (let* (
-          (y displayed-year)
-          (d (calendar-day-of-week (list 11 11 y))) )
+      (let* ((y displayed-year)
+             (d (calendar-day-of-week (list 11 11 y))))
         (when (>= displayed-month 10)
           (cond
             ((= d 6)
@@ -1006,9 +999,8 @@ STRING)).  Returns nil if it is not visible in the current calendar window."
 (defun lorg-day-after-thanksgiving ()
   (cond
     ((eq lorg-calendar-style 'twelve-months)
-      (let* (
-          (y (lorg-target-year-function 11))
-          (d (calendar-day-of-week (list 11 1 y))) )
+      (let* ((y (lorg-target-year-function 11))
+             (d (calendar-day-of-week (list 11 1 y))))
         (cond
           ((= d 5)
             (list (list (list 11 29 y) "Day After Thanksgiving")))
@@ -1017,9 +1009,8 @@ STRING)).  Returns nil if it is not visible in the current calendar window."
           (t
             (lorg-holiday-float 11 5 4 "Day After Thanksgiving")))) )
     ((eq lorg-calendar-style 'three-months)
-      (let* (
-          (y displayed-year)
-          (d (calendar-day-of-week (list 11 1 y))) )
+      (let* ((y displayed-year)
+             (d (calendar-day-of-week (list 11 1 y))))
         (when (>= displayed-month 10)
           (cond
             ((= d 5)
@@ -1030,9 +1021,8 @@ STRING)).  Returns nil if it is not visible in the current calendar window."
 (defun lorg-christmas-day ()
   (cond
     ((eq lorg-calendar-style 'twelve-months)
-      (let* (
-          (y (lorg-target-year-function 12))
-          (d (calendar-day-of-week (list 12 25 y))) )
+      (let* ((y (lorg-target-year-function 12))
+             (d (calendar-day-of-week (list 12 25 y))))
         (cond 
            ((= d 6) ;; Saturday
              (list (list (list 12 27 y) "Christmas Day + 2")))
@@ -1041,9 +1031,8 @@ STRING)).  Returns nil if it is not visible in the current calendar window."
            (t
              (list (list (list 12 25 y) "Christmas Day"))))) )
     ((eq lorg-calendar-style 'three-months)
-      (let* (
-          (y displayed-year)
-          (d (calendar-day-of-week (list 12 25 y))) )
+      (let* ((y displayed-year)
+             (d (calendar-day-of-week (list 12 25 y))))
         (cond
           ((>= displayed-month 11)
             (cond 
@@ -1067,12 +1056,10 @@ STRING)).  Returns nil if it is not visible in the current calendar window."
 (defun lorg-holiday-float (month dayname n string &optional day)
   (cond
     ((eq lorg-calendar-style 'twelve-months)
-      (let* ((d
-               (or
-                  day
-                  (if (> n 0)
-                    1
-                    (calendar-last-day-of-month month (lorg-target-year-function month))))))
+      (let ((d (or day
+                   (if (> n 0)
+                     1
+                     (calendar-last-day-of-month month (lorg-target-year-function month))))))
         (list (list (calendar-nth-named-day n dayname month (lorg-target-year-function month) d) string))))
     ((eq lorg-calendar-style 'three-months)
       (let* ((m1 displayed-month)
@@ -1114,11 +1101,10 @@ HLIST is a list of elements of the form (DATE) TEXT."
                     hlist)))
 
 (defun lorg-cal-sexp (sexp string)
-  (let* (
-      (m displayed-month)
-      (y displayed-year)
-      year
-      date)
+  (let ((m displayed-month)
+        (y displayed-year)
+        year
+        date)
     (calendar-increment-month m y -1)
     (lorg-filter-visible-calendar
      (list
@@ -1130,11 +1116,10 @@ HLIST is a list of elements of the form (DATE) TEXT."
 (defun lorg-calendar-goto-today ()
   "Reposition the lorg-calendar window so the current date is visible."
   (interactive)
-  (let* (
-      (today (lorg-calendar-current-date))
-      (month (calendar-extract-month today))
-      (day (calendar-extract-day today))
-      (year (calendar-extract-year today)))
+  (let* ((today (lorg-calendar-current-date))
+         (month (calendar-extract-month today))
+         (day (calendar-extract-day today))
+         (year (calendar-extract-year today)))
     (if (not (lorg-calendar-date-is-visible-p today))
       (progn
         (lorg-calendar-generate month year)
@@ -1144,10 +1129,9 @@ HLIST is a list of elements of the form (DATE) TEXT."
 
 (defun lorg-calendar-forward-month (arg)
 (interactive "p")
-  (let* (
-      (arg (if arg arg 1))
-      month
-      year)
+  (let ((arg (if arg arg 1))
+        month
+        year)
     (with-current-buffer (get-buffer lorg-calendar-buffer)
       (setq month displayed-month)
       (setq year displayed-year)
@@ -1180,7 +1164,6 @@ Optional integer OFFSET is a number of days from the current date."
        (+ offset (calendar-absolute-from-gregorian now))))))
 
 (defun lorg-message (input)
-(interactive)
   (message
     (propertize input 'face 'font-lock-warning-face)))
 
@@ -1221,15 +1204,14 @@ Optional integer OFFSET is a number of days from the current date."
   (not (equal (- (point-max) (point-min)) (buffer-size))))
 
 (defun lorg-display-buffer-below (buffer alist)
- (let (
-    (window
-      (cond
-        ((get-buffer-window buffer (selected-frame))
-          (get-buffer-window buffer (selected-frame)))
-        ((window-in-direction 'below)
-          (window-in-direction 'below))
-        (t
-          (split-window (selected-window) nil 'below)))))
+ (let ((window
+         (cond
+           ((get-buffer-window buffer (selected-frame))
+             (get-buffer-window buffer (selected-frame)))
+           ((window-in-direction 'below)
+             (window-in-direction 'below))
+           (t
+             (split-window (selected-window) nil 'below)))))
   ;;; At some point subsequent to Emacs 26.3.50, `window--display-buffer' was
   ;;; modified to eliminate the fifth argument DEDICATED.  Previously, it was
   ;;; possible to use `display-buffer-mark-dedicated' for DEDICATED argument.
@@ -1241,19 +1223,18 @@ Optional integer OFFSET is a number of days from the current date."
 then display that `buffer` in said window. (3) If `buffer` is not already
 displayed, and if there is a window to the right, then use the selected window.
 (4) If all else fails, then create a new window to the left and display `buffer` there."
- (let (
-    (window
-      (cond
-        ((get-buffer-window buffer (selected-frame))
-          (get-buffer-window buffer (selected-frame)))
-        ((window-in-direction 'above)
-          (window-in-direction 'above))
-        ((window-in-direction 'left)
-          (window-in-direction 'left))
-        ((window-in-direction 'right)
-          (selected-window))
-        (t
-          (split-window (selected-window) nil 'left)))))
+ (let ((window
+         (cond
+           ((get-buffer-window buffer (selected-frame))
+             (get-buffer-window buffer (selected-frame)))
+           ((window-in-direction 'above)
+             (window-in-direction 'above))
+           ((window-in-direction 'left)
+             (window-in-direction 'left))
+           ((window-in-direction 'right)
+             (selected-window))
+           (t
+             (split-window (selected-window) nil 'left)))))
   ;;; At some point subsequent to Emacs 26.3.50, `window--display-buffer' was
   ;;; modified to eliminate the fifth argument DEDICATED.  Previously, it was
   ;;; possible to use `display-buffer-mark-dedicated' for DEDICATED argument.
@@ -1265,19 +1246,18 @@ displayed, and if there is a window to the right, then use the selected window.
 then display that `buffer` in said window. (3) If `buffer` is not already
 displayed, and if there is a window to the left, then use the selected window.
 (4) If all else fails, then create a new window to the right and display `buffer` there."
- (let (
-    (window
-      (cond
-        ((get-buffer-window buffer (selected-frame))
-          (get-buffer-window buffer (selected-frame)))
-        ((window-in-direction 'above)
-          (window-in-direction 'above))
-        ((window-in-direction 'right)
-          (window-in-direction 'right))
-        ((window-in-direction 'left)
-          (selected-window))
-        (t
-          (split-window (selected-window) nil 'right)))))
+ (let ((window
+         (cond
+           ((get-buffer-window buffer (selected-frame))
+             (get-buffer-window buffer (selected-frame)))
+           ((window-in-direction 'above)
+             (window-in-direction 'above))
+           ((window-in-direction 'right)
+             (window-in-direction 'right))
+           ((window-in-direction 'left)
+             (selected-window))
+           (t
+             (split-window (selected-window) nil 'right)))))
   ;;; At some point subsequent to Emacs 26.3.50, `window--display-buffer' was
   ;;; modified to eliminate the fifth argument DEDICATED.  Previously, it was
   ;;; possible to use `display-buffer-mark-dedicated' for DEDICATED argument.
@@ -1314,28 +1294,5 @@ Returns the list (month day year) giving the cursor position."
                         (not (get-text-property (1- (point)) 'date))))
             (backward-char 1)))
         (lorg-calendar-cursor-to-date))))
-
-(defmacro lorg-calendar-for-loop (var from init to final do &rest body)
-  "Execute a for loop.
-Evaluate BODY with VAR bound to successive integers from INIT to FINAL,
-inclusive.  The standard macro `dotimes' is preferable in most cases."
-  `(let ((,var (1- ,init)))
-    (while (>= ,final (setq ,var (1+ ,var)))
-      ,@body)))
-
-(defun lorg-calendar-goto-today ()
-  "Reposition the lorg-calendar window so the current date is visible."
-  (interactive)
-  (let* (
-      (today (calendar-current-date))
-      (month (calendar-extract-month today))
-      (day (calendar-extract-day today))
-      (year (calendar-extract-year today)))
-    (if (not (lorg-calendar-date-is-visible-p today))
-      (progn
-        (lorg-calendar-generate month year)
-        (lorg-calendar-cursor-to-visible-date today))
-      (calendar-update-mode-line)
-      (lorg-calendar-cursor-to-visible-date today))))
 
 (provide 'lorg-calendar)

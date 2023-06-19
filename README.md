@@ -4,7 +4,7 @@ lorg-calendar.el
     INSTRUCTIONS:
 
     To generate a 12-month rotating calendar _without_ sample events,
-    type:  M-x lawlist-year-calendar
+    type:  M-x lorg-year-calendar
 
     To generate a 12-month rotating calendar _with_ sample events,
     type:  M-x lorg-calendar-generate

@@ -36,32 +36,6 @@
   (define-key calendar-mode-map [right] 'lorg-calendar-forward-day)
   (define-key calendar-mode-map [left]  'lorg-calendar-backward-day) ))
 
-(defvar displayed-month nil)
-(defvar displayed-year nil)
-
-;;;###autoload
-(defun lorg-calendar-other-month (month year &optional event)
-  "Display a three-month lawlist-calendar centered around MONTH and YEAR.
-EVENT is an event like `last-nonmenu-event'."
-  (interactive (let ((event (list last-nonmenu-event)))
-                 (append (calendar-read-date 'noday) event)))
-  (save-selected-window
-    (and event
-         (setq event (event-start event))
-         (select-window (posn-window event)))
-    (unless (and (not (null displayed-month))
-                 (not (null displayed-year))
-                 (= month displayed-month)
-                 (= year displayed-year))
-      (let ((old-date (lorg-calendar-cursor-to-date))
-            (today (lorg-calendar-current-date)))
-        (lorg-calendar-generate month year)
-        (lorg-calendar-cursor-to-visible-date
-         (cond
-          ((lorg-calendar-date-is-visible-p old-date) old-date)
-          ((lorg-calendar-date-is-visible-p today) today)
-          (t (list month 1 year))))))))
-
 (defun lorg-calendar-forward-day (arg)
   "Move the cursor forward ARG days.
 Moves backward if ARG is negative."
@@ -78,7 +52,21 @@ Moves backward if ARG is negative."
            (new-display-year (calendar-extract-year new-cursor-date)))
       ;; Put the new month on the screen, if needed.
       (unless (lorg-calendar-date-is-visible-p new-cursor-date)
-        (lorg-calendar-other-month new-display-month new-display-year))
+        (save-selected-window
+          (let ((event (list last-nonmenu-event)))
+            (append (calendar-read-date 'noday) event)
+            (setq event (event-start event))
+            (select-window (posn-window event)))
+          (unless (and (= new-displayed-month displayed-month)
+                       (= new-displayed-year displayed-year))
+            (let ((old-date (lorg-calendar-cursor-to-date))
+                  (today (lorg-calendar-current-date)))
+              (lorg-calendar-generate new-displayed-month new-displayed-year)
+              (lorg-calendar-cursor-to-visible-date
+               (cond
+                ((lorg-calendar-date-is-visible-p old-date) old-date)
+                ((lorg-calendar-date-is-visible-p today) today)
+                (t (list month 1 year))))))))
       ;; Go to the new date.
       (lorg-calendar-cursor-to-visible-date new-cursor-date)))
   (run-hooks 'lorg-calendar-move-hook))

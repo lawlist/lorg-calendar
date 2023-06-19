@@ -1299,6 +1299,25 @@ Returns the list (month day year) giving the cursor position."
     map)
   "Local keymap for `tda-disabled-mode' buffers.")
 
+(define-derived-mode lorg-year-calendar-mode nil "Calendar"
+  "A major mode for the calendar window.
+For a complete description, see the info node `Calendar/Diary'.
+
+\\<lorg-year-calendar-mode-map>\\{lorg-year-calendar-mode-map}"
+  (setq buffer-read-only t
+        buffer-undo-list t
+        indent-tabs-mode nil)
+  (setq-local scroll-margin 0) ; bug#10379
+  (calendar-update-mode-line)
+  (make-local-variable 'calendar-mark-ring)
+  (make-local-variable 'displayed-month) ; month in middle of window
+  (make-local-variable 'displayed-year)  ; year in middle of window
+  ;; Most functions only work if displayed-month and displayed-year are set,
+  ;; so let's make sure they're always set.  Most likely, this will be reset
+  ;; soon in calendar-generate, but better safe than sorry.
+  (unless (boundp 'displayed-month) (setq displayed-month 1))
+  (unless (boundp 'displayed-year)  (setq displayed-year  2001)))
+
 ;;;###autoload
 (defun lorg-year-calendar (&optional month year)
   "Generate a one (1) year calendar that can be scrolled by month in each direction.
@@ -1315,9 +1334,8 @@ See also:  http://ivan.kanis.fr/caly.el"
              (read-string "Please enter a year (e.g., 2014):  "
                nil nil current-year)))))
     (switch-to-buffer (get-buffer-create calendar-buffer))
-    (when (not (eq major-mode 'calendar-mode))
-      (calendar-mode))
-    (use-local-map lorg-year-calendar-mode-map)
+    (when (not (eq major-mode 'lorg-year-calendar-mode))
+      (lorg-year-calendar-mode))
     (setq lorg-calendar-style 'twelve-months)
     (setq displayed-month month)
     (setq displayed-year year)

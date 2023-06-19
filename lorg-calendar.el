@@ -1331,9 +1331,9 @@ See also:  http://ivan.kanis.fr/caly.el"
     (setq buffer-read-only nil)
     (erase-buffer)
     ;; horizontal rows
-    (lawlist-calendar-for-loop j from 0 to 3 do
+    (lorg-calendar-for-loop j from 0 to 3 do
       ;; vertical columns
-      (lawlist-calendar-for-loop i from 0 to 2 do
+      (lorg-calendar-for-loop i from 0 to 2 do
         (calendar-generate-month
           ;; month
           (cond

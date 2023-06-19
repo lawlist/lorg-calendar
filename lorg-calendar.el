@@ -51,8 +51,8 @@
            (new-display-year (calendar-extract-year new-cursor-date)))
       ;; Put the new month on the screen, if needed.
       (unless (and (lorg-calendar-date-is-visible-p new-cursor-date)
-                   (= new-displayed-month displayed-month)
-                   (= new-displayed-year displayed-year))
+                   (= new-display-month displayed-month)
+                   (= new-display-year displayed-year))
         (let ((old-date (lorg-calendar-cursor-to-date))
               (today (lorg-calendar-current-date)))
           (lorg-calendar-generate new-displayed-month new-displayed-year)

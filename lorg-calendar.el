@@ -145,7 +145,7 @@ This is a modification of:  http://homepage3.nifty.com/oatu/emacs/calendar.html"
                   'twelve-months)
                 (t
                   'twelve-months) )))
-          ((get-buffer-window lorg-calendar-buffer (selected-frame))
+          ((get-buffer lorg-calendar-buffer)
              (with-current-buffer (get-buffer lorg-calendar-buffer)
                lorg-calendar-style))
           (t 'three-months)))
@@ -630,7 +630,7 @@ for the document of time format string"
 
 (defun lorg-calendar-date-is-visible-p (date)
   "Return non-nil if DATE is valid and is visible in the lorg-calendar window."
-  (let ((style (and (get-buffer-window lorg-calendar-buffer (selected-frame))
+  (let ((style (and (get-buffer lorg-calendar-buffer)
                     (with-current-buffer (get-buffer lorg-calendar-buffer)
                       lorg-calendar-style))))
     (cond
@@ -654,7 +654,7 @@ If cursor is not on a specific date, signals an error if optional parameter
 ERROR is non-nil, otherwise just returns nil.
 If EVENT is non-nil, it's an event indicating the buffer position to
 use instead of point."
-  (let ((style (and (get-buffer-window lorg-calendar-buffer (selected-frame))
+  (let ((style (and (get-buffer lorg-calendar-buffer)
                     (with-current-buffer (get-buffer lorg-calendar-buffer)
                       lorg-calendar-style))))
     (cond
@@ -727,7 +727,7 @@ use instead of point."
 
 (defun lorg-calendar-cursor-to-visible-date (date)
   "Move the cursor to DATE that is on the screen."
-  (let ((style (and (get-buffer-window lorg-calendar-buffer (selected-frame))
+  (let ((style (and (get-buffer lorg-calendar-buffer)
                     (with-current-buffer (get-buffer lorg-calendar-buffer)
                       lorg-calendar-style))))
     (cond

@@ -1384,7 +1384,7 @@ See also:  http://ivan.kanis.fr/caly.el"
   "Scroll the yearly calendar by month in a backward direction."
   (interactive (list (prefix-numeric-value current-prefix-arg)
                      last-nonmenu-event))
-  (lawlist-year-calendar-forward -year(- (or arg 1)) event))
+  (lawlist-year-calendar-forward-year (- (or arg 1)) event))
 
 (defun lawlist-year-calendar-forward-day (arg)
   "Move the cursor forward ARG days.  Moves backward if ARG is negative."

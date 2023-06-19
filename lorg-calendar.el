@@ -46,7 +46,9 @@ EVENT is an event like `last-nonmenu-event'."
     (and event
          (setq event (event-start event))
          (select-window (posn-window event)))
-    (unless (and (= month displayed-month)
+    (unless (and (not (null displayed-month))
+                 (not (null displayed-year))
+                 (= month displayed-month)
                  (= year displayed-year))
       (let ((old-date (lorg-calendar-cursor-to-date))
             (today (lorg-calendar-current-date)))

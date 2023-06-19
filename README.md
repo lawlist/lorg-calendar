@@ -1,10 +1,18 @@
 lorg-calendar.el
 ================
 
-    INSTRUCTIONS:  M-x lorg-calendar-generate
+    INSTRUCTIONS:
+
+    To generate a 12-month rotating calendar _without_ sample events,
+    type:  M-x lawlist-year-calendar
+
+    To generate a 12-month rotating calendar _with_ sample events,
+    type:  M-x lorg-calendar-generate
 
     To scroll month by month forward, use:  >
+
     To scroll month by month backward, use:  <
+
     To mark a new date not yet selected, use the left click on the mouse,
       which will also copy the date to the kill-ring.  Left-clicking on a
       date previously marked with the left-click will remove the overlay.

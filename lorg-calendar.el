@@ -1283,21 +1283,7 @@ Returns the list (month day year) giving the cursor position."
         (lorg-calendar-cursor-to-date))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; https://stackoverflow.com/a/21409154/2112489
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;                                                                            ;;;
-;;; Scroll a yearly calendar by month -- in a forwards or backwards direction. ;;;
-;;;                                                                            ;;;
-;;; To try out this example, evaluate the entire code snippet and type:        ;;;
-;;;                                                                            ;;;
-;;;     M-x year-calendar                                                      ;;;
-;;;                                                                            ;;;
-;;; To scroll forward by month, type the key:  >                               ;;;
-;;;                                                                            ;;;
-;;; To scroll backward by month, type the key:  <                              ;;;
-;;;                                                                            ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; PLAIN 12-MONTH ROTATING CALENDAR WITHOUT SAMPLE EVENTS
 
 (defvar lawlist-twelve-month-mode-map
   (let ((map (make-sparse-keymap)))

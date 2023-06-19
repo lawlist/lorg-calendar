@@ -36,6 +36,9 @@
   (define-key calendar-mode-map [right] 'lorg-calendar-forward-day)
   (define-key calendar-mode-map [left]  'lorg-calendar-backward-day) ))
 
+(defvar displayed-month nil)
+(defvar displayed-year nil)
+
 ;;;###autoload
 (defun lorg-calendar-other-month (month year &optional event)
   "Display a three-month lawlist-calendar centered around MONTH and YEAR.

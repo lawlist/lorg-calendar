@@ -50,18 +50,18 @@
            (new-display-month (calendar-extract-month new-cursor-date))
            (new-display-year (calendar-extract-year new-cursor-date)))
       ;; Put the new month on the screen, if needed.
-      (unless (lorg-calendar-date-is-visible-p new-cursor-date)
-        (unless (and (= new-displayed-month displayed-month)
-                     (= new-displayed-year displayed-year))
-          (let ((old-date (lorg-calendar-cursor-to-date))
-                (today (lorg-calendar-current-date)))
-            (lorg-calendar-generate new-displayed-month new-displayed-year)
-            (lorg-calendar-cursor-to-visible-date
-             (cond
+      (unless (and (lorg-calendar-date-is-visible-p new-cursor-date)
+                   (= new-displayed-month displayed-month)
+                   (= new-displayed-year displayed-year))
+        (let ((old-date (lorg-calendar-cursor-to-date))
+              (today (lorg-calendar-current-date)))
+          (lorg-calendar-generate new-displayed-month new-displayed-year)
+          (lorg-calendar-cursor-to-visible-date
+            (cond
               ((lorg-calendar-date-is-visible-p old-date) old-date)
               ((lorg-calendar-date-is-visible-p today) today)
-              (t (list month 1 year)))))))
-      ;; Go to the new date.
+              (t (list month 1 year))))))
+       ;; Go to the new date.
       (lorg-calendar-cursor-to-visible-date new-cursor-date)))
   (run-hooks 'lorg-calendar-move-hook))
 

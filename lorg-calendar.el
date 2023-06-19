@@ -1302,8 +1302,8 @@ Returns the list (month day year) giving the cursor position."
 (defvar lawlist-twelve-month-mode-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map calendar-mode-map)
-    (define-key calendar-mode-map "<" 'lawlist-year-calendar-backward-year)
-    (define-key calendar-mode-map ">" 'lawlist-year-calendar-forward-year)
+    (define-key calendar-mode-map "<" 'lawlist-year-calendar-backward-month)
+    (define-key calendar-mode-map ">" 'lawlist-year-calendar-forward-month)
     (define-key calendar-mode-map "." 'lawlist-year-calendar-goto-today)
     (define-key calendar-mode-map [mouse-1] 'lorg-mark-mouse-set-point)
     (define-key calendar-mode-map [up]    'lawlist-year-calendar-backward-week)
@@ -1365,7 +1365,7 @@ See also:  http://ivan.kanis.fr/caly.el"
     (goto-char (point-min))
     (setq buffer-read-only t)))
 
-(defun lawlist-year-calendar-forward-year (&optional arg event)
+(defun lawlist-year-calendar-forward-month (&optional arg event)
   "Scroll the yearly calendar by month in a forward direction."
   (interactive (list (prefix-numeric-value current-prefix-arg)
                      last-nonmenu-event))
@@ -1380,11 +1380,11 @@ See also:  http://ivan.kanis.fr/caly.el"
     (goto-char (point-min))
     (run-hooks 'calendar-move-hook)))
 
-(defun lawlist-year-calendar-backward-year (&optional arg event)
+(defun lawlist-year-calendar-backward-month (&optional arg event)
   "Scroll the yearly calendar by month in a backward direction."
   (interactive (list (prefix-numeric-value current-prefix-arg)
                      last-nonmenu-event))
-  (lawlist-year-calendar-forward-year (- (or arg 1)) event))
+  (lawlist-year-calendar-forward-month (- (or arg 1)) event))
 
 (defun lawlist-year-calendar-forward-day (arg)
   "Move the cursor forward ARG days.  Moves backward if ARG is negative."
